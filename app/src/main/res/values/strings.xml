@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">MVVMGif</string>
+    <string name="search">Поиск</string>
+    <string name="giphy_com">GIPHY.com</string>
+</resources>
