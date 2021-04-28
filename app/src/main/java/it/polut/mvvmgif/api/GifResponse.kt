@@ -3,8 +3,8 @@ package it.polut.mvvmgif.api
 import com.google.gson.annotations.SerializedName
 
 data class GifResponse(
-    @SerializedName("data") val data: List<GifItem>,
-    @SerializedName("pagination") val pagination: Pagination
+    @SerializedName("data") var data: List<GifItem>,
+    @SerializedName("pagination") var pagination: Pagination
 )
 
 data class Pagination(

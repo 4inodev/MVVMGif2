@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
         viewModel?.responseLiveData?.observe(this, Observer {
             isLoading = false
             if (it != null) {
-                adapter?.addData(it.data)
+                adapter?.setData(it.data)
                 currentOffset += it.pagination.count
                 if (currentOffset >= it.pagination.total) {
                     isLastPage = true

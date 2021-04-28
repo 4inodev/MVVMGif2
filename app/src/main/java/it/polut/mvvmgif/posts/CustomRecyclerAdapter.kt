@@ -35,6 +35,12 @@ class CustomRecyclerAdapter(val data: ArrayList<GifItem>, val listener: (GifItem
         return data.size
     }
 
+    fun setData(newData: List<GifItem>) {
+        data.clear()
+        data.addAll(newData)
+        notifyDataSetChanged()
+    }
+
     fun addData(newData: List<GifItem>) {
         data.addAll(newData)
         notifyDataSetChanged()

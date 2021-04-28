@@ -25,7 +25,16 @@ class GifsRepository {
 
                 override fun onResponse(call: Call<GifResponse>, response: Response<GifResponse>) {
                     if (response.isSuccessful && response.body() != null) {
-                        responseLiveData.postValue(response.body())
+                        val oldData = responseLiveData.value
+                        if (oldData != null) {
+                            oldData.pagination = response.body()!!.pagination
+                            val newList = ArrayList(oldData.data)
+                            newList.addAll(ArrayList(response.body()!!.data))
+                            oldData.data = newList
+                            responseLiveData.postValue(oldData)
+                        } else {
+                            responseLiveData.postValue(response.body())
+                        }
                     }
                 }
             })
