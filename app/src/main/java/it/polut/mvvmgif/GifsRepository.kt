@@ -10,9 +10,14 @@ import retrofit2.Response
 
 class GifsRepository {
     private var responseLiveData = MutableLiveData<GifResponse?>()
+    private var searchLiveData = MutableLiveData<GifResponse?>()
 
     fun getResponseLiveData(): MutableLiveData<GifResponse?> {
         return responseLiveData
+    }
+
+    fun getSearchLiveData(): MutableLiveData<GifResponse?> {
+        return searchLiveData
     }
 
     fun loadGifs(key: String, limit: Int, offset: Int) {
@@ -35,6 +40,22 @@ class GifsRepository {
                         } else {
                             responseLiveData.postValue(response.body())
                         }
+                    }
+                }
+            })
+    }
+
+    fun searchGifs(key: String, limit: Int, q: String) {
+        NetworkHelper.getService()
+            .searchGif(key, limit, q)
+            .enqueue(object : Callback<GifResponse> {
+                override fun onFailure(call: Call<GifResponse>, t: Throwable) {
+                    responseLiveData.postValue(null)
+                }
+
+                override fun onResponse(call: Call<GifResponse>, response: Response<GifResponse>) {
+                    if (response.isSuccessful && response.body() != null) {
+                        searchLiveData.postValue(response.body())
                     }
                 }
             })
