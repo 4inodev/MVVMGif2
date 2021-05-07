@@ -60,6 +60,12 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+        binding.swipeTrending.setOnRefreshListener {
+            resetPagination()
+            adapter?.clearData()
+            viewModel?.loadTrending(currentOffset)
+        }
+
         val searchLm = GridLayoutManager(this, 2)
         binding.searchRecycler.layoutManager = searchLm
         searchAdapter = CustomRecyclerAdapter(ArrayList()) {
@@ -71,8 +77,9 @@ class MainActivity : AppCompatActivity() {
     private fun initObservers() {
         viewModel?.responseLiveData?.observe(this, Observer {
             isLoading = false
+            binding.swipeTrending.isRefreshing = false
             if (it != null) {
-                adapter?.setData(it.data)
+                adapter?.addData(it.data)
                 currentOffset += it.pagination.count
                 if (currentOffset >= it.pagination.total) {
                     isLastPage = true
@@ -112,5 +119,11 @@ class MainActivity : AppCompatActivity() {
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
         })
+    }
+
+    private fun resetPagination() {
+        isLoading = false
+        isLastPage = false
+        currentOffset = 0
     }
 }
