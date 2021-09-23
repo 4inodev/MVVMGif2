@@ -1,9 +1,11 @@
 package it.polut.mvvmgif
 
-import androidx.lifecycle.LiveData
+import android.os.AsyncTask
 import androidx.lifecycle.MutableLiveData
+import it.polut.mvvmgif.api.GifItem
 import it.polut.mvvmgif.api.GifResponse
 import it.polut.mvvmgif.api.NetworkHelper
+import it.polut.mvvmgif.db.CacheDao
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -11,6 +13,7 @@ import retrofit2.Response
 class GifsRepository {
     private var responseLiveData = MutableLiveData<GifResponse?>()
     private var searchLiveData = MutableLiveData<GifResponse?>()
+    private var cacheLiveData = MutableLiveData<List<GifItem>>()
 
     fun getResponseLiveData(): MutableLiveData<GifResponse?> {
         return responseLiveData
@@ -19,6 +22,10 @@ class GifsRepository {
     fun getSearchLiveData(): MutableLiveData<GifResponse?> {
         return searchLiveData
     }
+    fun getcacheLiveData(): MutableLiveData<List<GifItem>> {
+        return cacheLiveData
+    }
+
 
     fun loadGifs(key: String, limit: Int, offset: Int) {
         NetworkHelper.getService()
@@ -50,5 +57,23 @@ class GifsRepository {
                     }
                 }
             })
+    }
+
+    fun saveGifsToCache(item: GifResponse){
+        insertAsyncTask(cacheDao).execute(item)
+    }
+    private class insertAsyncTask internal constructor(dao: CacheDao) :
+        AsyncTask<GifResponse, Void?, Void?>() {
+        private val mAsyncTaskDao: CacheDao
+        override fun doInBackground(vararg params: GifResponse): Void? {
+            for (item in params[0].data){
+                mAsyncTaskDao.addGifToCache(item)
+            }
+            return null
+        }
+
+        init {
+            mAsyncTaskDao = dao
+        }
     }
 }

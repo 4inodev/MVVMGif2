@@ -5,7 +5,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object NetworkHelper {
     private val retrofit = Retrofit.Builder()
-        .baseUrl("https://api.giphy.com/")
+        .baseUrl("https://jsonplaceholder.typicode.com/")
         .addConverterFactory(GsonConverterFactory.create())
         .build()
     private var service: ApiService? = null
